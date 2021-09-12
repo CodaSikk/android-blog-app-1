@@ -18,17 +18,12 @@ import com.example.blogapp.Blog
 
 @Composable
 fun BlogList(blogs: List<Blog>) {
-    LazyColumn(
-        modifier = Modifier.padding(
-            horizontal = 16.dp,
-            vertical = 12.dp
-        )
-    ) {
+    LazyColumn {
         items(items = blogs) { blog ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 12.dp)
+                    .padding(all = 16.dp)
                     .clickable { },
                 shape = RoundedCornerShape(size = 8.dp),
                 elevation = 8.dp
