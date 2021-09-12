@@ -5,34 +5,44 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.blogapp.ui.composables.BlogList
 import com.example.blogapp.ui.theme.BlogAppTheme
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val blogs = getBlogs()
+
         setContent {
             BlogAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    BlogList(blogs = blogs)
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+    private fun getBlogs(): List<Blog> {
+        val inputStream = assets.open("blogs.json")
+        val reader = BufferedReader(InputStreamReader(inputStream))
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    BlogAppTheme {
-        Greeting("Android")
+        val jsonStringBuilder = StringBuilder()
+        var line = reader.readLine()
+        while (line != null) {
+            jsonStringBuilder.append(line)
+            line = reader.readLine()
+        }
+
+        reader.close()
+
+        val type = object : TypeToken<List<Blog>>() {}.type
+
+        return Gson().fromJson(jsonStringBuilder.toString(), type)
     }
 }
